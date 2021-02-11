@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import com.example.eggtimer.MainActivity
 import com.example.eggtimer.R
+import com.example.eggtimer.receiver.SnoozeReceiver
 
 // Notification ID.
 private val NOTIFICATION_ID = 0
@@ -39,6 +40,14 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         .bigPicture(eggImage)
         .bigLargeIcon(null)
 
+    val snoozeIntent = Intent(applicationContext, SnoozeReceiver::class.java)
+    val snoozePendingIntent: PendingIntent = PendingIntent.getBroadcast(
+        applicationContext,
+        REQUEST_CODE,
+        snoozeIntent,
+        FLAGS
+    )
+
     val builder = NotificationCompat.Builder(
         applicationContext,
         applicationContext.getString(R.string.egg_notification_channel_id)
@@ -49,6 +58,11 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
         .setStyle(bigPictureStyle)
+        .addAction(
+            R.drawable.egg_icon,
+            applicationContext.getString(R.string.snooze),
+            snoozePendingIntent
+        )
 
     notify(NOTIFICATION_ID, builder.build())
 }
