@@ -2,15 +2,18 @@ package com.example.eggtimer.ui
 
 import android.app.AlarmManager
 import android.app.Application
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.CountDownTimer
 import android.os.SystemClock
 import androidx.core.app.AlarmManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.example.eggtimer.R
 import com.example.eggtimer.receiver.AlarmReceiver
+import com.example.eggtimer.util.sendNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -103,6 +106,13 @@ class EggTimerViewModel(private val app: Application) : AndroidViewModel(app) {
                     else ->timerLengthOptions[timerLengthSelection] * minute
                 }
                 val triggerTime = SystemClock.elapsedRealtime() + selectedInterval
+
+                val notificationManager = ContextCompat.getSystemService(
+                    app,
+                    NotificationManager::class.java
+                ) as NotificationManager
+
+                notificationManager.sendNotification(app.getString(R.string.timer_running), app)
 
                 AlarmManagerCompat.setExactAndAllowWhileIdle(
                     alarmManager,
