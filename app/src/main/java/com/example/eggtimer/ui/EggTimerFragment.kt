@@ -2,6 +2,10 @@ package com.example.eggtimer.ui
 
 import android.app.Activity
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.graphics.Color
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -33,11 +37,32 @@ class EggTimerFragment : Fragment() {
         binding.eggTimerViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
+        createChannel(getString(R.string.egg_notification_channel_id),
+                        getString(R.string.breakfast_notification_channel_name))
+
         return binding.root
     }
 
     private fun createChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_LOW
+            )
 
+            notificationChannel.apply {
+                enableLights(true)
+                lightColor = Color.RED
+                enableVibration(true)
+                notificationChannel.description = "Time for breakfast"
+            }
+
+            val notificationManager = requireActivity().getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 
     companion object {
