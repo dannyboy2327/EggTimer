@@ -37,6 +37,12 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         .setContentTitle(applicationContext.getString(R.string.notification_title))
         .setContentText(messageBody)
         .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
 
     notify(NOTIFICATION_ID, builder.build())
 }
+
+fun NotificationManager.cancelNotifications() {
+    cancelAll()
+}
+
